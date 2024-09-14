@@ -174,7 +174,7 @@ def refreshToken(Accname):
 
 def main(acc_name):
         while True:
-            # time.sleep(random.randint(60, 3*60))
+
             try:
                 if not accounts.get(acc_name).get("Login"):
                     token = Login(acc_name)
@@ -251,7 +251,7 @@ def main(acc_name):
 
 def start_threads():
 
-    # ایجاد سه ترد برای هر حساب
+
     threads = []
     for acc in accounts.keys():
         process = threading.Thread(target=main, args=(acc,))
