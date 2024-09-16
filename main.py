@@ -6,8 +6,9 @@ import threading
 import logging
 from config import *
 import threading
+import json
+import re
 
-logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 
 
 
@@ -169,7 +170,10 @@ def refreshToken(Accname):
     else:
         print("Failed to refresh the token")
 
-
+def read_from_file():
+    
+    with open("url.txt", "r") as f:
+        return f.readlines()
 
 
 def main(acc_name):
@@ -264,4 +268,25 @@ def start_threads():
 
 if __name__ == "__main__":
     print("Development By Reza")
+    accounts ={}
+    links =  (read_from_file())
+    keys = []
+    for x in links:
+        decode_data = unquote(string=unquote(string=x.split('&tgWebAppVersion')[0]))
+        match = re.search(r'"id":(\d+)', decode_data)
+        name = re.search(r'"first_name":"(.*?)"', decode_data)
+        if match:
+            user_id = match.group(1)
+            print(user_id)
+            name = name.group(1)
+        name = user_id + " " + name
+        
+        accounts[name] = {
+        "auth_url" : decode_data,                             
+        "access_token" : "",                        
+        "refresh_token" : "refresh_token",          
+        "Login" : False,                             
+    }
+
+
     start_threads()
