@@ -4,7 +4,7 @@ import random
 from urllib.parse import unquote
 import threading
 import logging
-from config import *
+# from config import *
 import threading
 import json
 import re
@@ -280,7 +280,7 @@ if __name__ == "__main__":
             print(user_id)
             name = name.group(1)
         name = user_id + " " + name
-        
+
         accounts[name] = {
         "auth_url" : decode_data,                             
         "access_token" : "",                        
