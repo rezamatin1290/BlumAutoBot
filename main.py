@@ -272,6 +272,7 @@ if __name__ == "__main__":
     links =  (read_from_file())
     keys = []
     for x in links:
+        x = x.strip()
         decode_data = unquote(string=unquote(string=x.split('&tgWebAppVersion')[0]))
         match = re.search(r'"id":(\d+)', decode_data)
         name = re.search(r'"first_name":"(.*?)"', decode_data)
