@@ -127,7 +127,7 @@ def Login(Accname):
     url = "https://user-domain.blum.codes/api/v1/auth/provider/PROVIDER_TELEGRAM_MINI_APP"
     global accounts
     auth_url = accounts[Accname]["auth_url"]
-    decode_data = unquote(string=unquote(string=auth_url.split('tgWebAppData=')[1].split('&tgWebAppVersion')[0]))
+    decode_data = unquote(string=unquote(string=x.split('&tgWebAppVersion')[0]))
 
     json_data = {"query" : decode_data}
     response = requests.post(url, json=json_data)
