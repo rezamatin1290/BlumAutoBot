@@ -308,7 +308,9 @@ def main(acc_name):
                     token = Login(acc_name)
 
                 user_d = user_balance(acc_name)
-                solve_task(acc_name)
+                
+                if config.get("auto_complete_task"):
+                    solve_task(acc_name)
 
                 if user_d.get("message") == "Invalid jwt token":
                     print("Invalid Token refresh token")
@@ -396,6 +398,10 @@ if __name__ == "__main__":
     accounts ={}
     links =  (read_from_file())
     keys = []
+    if len(links) == 0 or links[0] == " " or links[0] == "\n":
+        print("please insert your link in url.txt")
+        exit()
+
     for x in links:
         x = x.strip()
         decode_data = unquote(string=unquote(string=x.split('&tgWebAppVersion')[0]))
@@ -414,5 +420,7 @@ if __name__ == "__main__":
         "Login" : False,                             
     }
 
+    with open("config.json", 'r') as file:
+        config = json.load(file)
 
     start_threads()
