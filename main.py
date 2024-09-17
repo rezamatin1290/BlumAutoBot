@@ -77,81 +77,129 @@ def Claim_Farm(Accname):
 
     return response.json()
 
-
-def solve(Accname, task_id):
-    url = f'https://earn-domain.blum.codes/api/v1/tasks/{task_id}/start'
-    access_token = accounts[Accname]["access_token"]
-
+def solve(Accname, task: dict):
     access_token = accounts[Accname]["access_token"] 
-    print (f"[{Accname}]=>claim farming=>", end="")
 
-    headers = defheader
-    headers["authorization"] = access_token
-    response = requests.post(url, headers=headers)
-    if response.ok:
-        print(f"[{Accname}] => task started: ", response)
+    headers = {
+    'accept': 'application/json, text/plain, */*',
+    'accept-language': 'en-US,en;q=0.9',
+    'authorization': f'{access_token}',
+    'content-length': '0',
+    'lang': 'en',
+    'origin': 'https://telegram.blum.codes',
+    'priority': 'u=1, i',
+    'sec-ch-ua': '"Chromium";v="128", "Not;A=Brand";v="24", "Microsoft Edge";v="128", "Microsoft Edge WebView2";v="128"',
+    'sec-ch-ua-mobile': '?0',
+    'sec-ch-ua-platform': '"Windows"',
+    'sec-fetch-dest': 'empty',
+    'sec-fetch-mode': 'cors',
+    'sec-fetch-site': 'same-site',
+    'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36 Edg/128.0.0.0'
+}
+    
+    ignore_tasks = [
+        "39391eb2-f031-4954-bd8a-e7aecbb1f192",  # wallet connect
+        "d3716390-ce5b-4c26-b82e-e45ea7eba258",  # invite task
+        "f382ec3f-089d-46de-b921-b92adfd3327a",  # invite task
+        "220ee7b1-cca4-4af8-838a-2001cb42b813",  # invite task
+        "5ecf9c15-d477-420b-badf-058537489524",  # invite task
+        "c4e04f2e-bbf5-4e31-917b-8bfa7c4aa3aa",  # invite task
+    ]
+    task_id = task.get("id")
+    if task_id in ignore_tasks: return 
+    task_title = task.get("title")
+    task_status = task.get("status")
 
-    else:
-        print("error in task start ", response)
+    start_task_url = f"https://earn-domain.blum.codes/api/v1/tasks/{task_id}/start"
+    claim_task_url = f"https://earn-domain.blum.codes/api/v1/tasks/{task_id}/claim"
+    _start = requests.post(start_task_url, headers=headers)
+    # if task_id in ignore_tasks:
+    #     return
+    # if task_status == "FINISHED":
+    #     print(f"{Accname}already complete task id {task_id} !")
+    #     return
+    # if task_status == "READY_FOR_CLAIM":
+    #     _res = requests.post(claim_task_url, headers)
+    #     _status = _res.json().get("status")
+    #     if _status == "FINISHED":
+    #         print(f"{Accname}success complete task id {task_id} !")
+    #         return
+    # _res = requests.post(start_task_url, headers)
+    time.sleep(5)
+    _res = requests.post(claim_task_url, headers = headers)
+    print(_res)
+    # _status = _res.json().get("status")
+    # if _status == "STARTED":
+    #     _res =requests.post(claim_task_url, headers)
+    #     _status = _res.json().get("status")
+    #     if _status == "FINISHED":
+    #         print(f"{Accname}success complete task id {task_id} !")
+    #         return
 
-    time.sleep(random.randint(10, 15))
-    print(f"[{Accname}] => claiming task")
-    url = f"https://earn-domain.blum.codes/api/v1/tasks/{task_id}/claim"
-    response = requests.post(url, headers=headers)
-    if response.ok:
-        print(f"[{Accname}] => task claimed: ", response)
+def find_not_finished_tasks(data):
+    not_finished_tasks = []
 
-    else:
-        print(f"[{Accname}] =>error in task claiming  ", response)
+
+    def traverse_tasks(tasks):
+        for task in tasks:
+            if task.get("status") != "FINISHED":
+                not_finished_tasks.append(task)
+            if "subTasks" in task:
+                traverse_tasks(task["subTasks"])
+
+
+    def traverse_sections(sections):
+        for section in sections:
+            if "tasks" in section:
+                traverse_tasks(section["tasks"])
+            if "subSections" in section:
+                traverse_sections(section["subSections"])
+
+
+    traverse_sections(data)
+
+    return not_finished_tasks
 
 
 def solve_task(Accname):
     url_task = "https://earn-domain.blum.codes/api/v1/tasks"
-    access_token = accounts[Accname]["access_token"]
-    access_token = accounts[Accname]["access_token"] 
 
-    print (f"[{Accname}]=>getting task =>", end="")
+    access_token = accounts[Accname]["access_token"] 
 
     headers = defheader
     headers["authorization"] = access_token
     res = requests.get(url_task, headers=headers)
-    # if not res.ok:
-    #     print("failed in get task list !")
- 
-    
-    for tasks in res.json():
-        if isinstance(tasks, str):
-            print("failed in get task list !")
-            return
-        for k in list(tasks.keys()):
-            if k != "tasks" and k != "subSections":
-                continue
-            for t in tasks.get(k):
-                if isinstance(t, dict):
-                    subtasks = t.get("subTasks")
-                    if subtasks is not None:
 
-                        task_id = task.get("id")
-                        task_title = task.get("title")
-                        task_status = task.get("status") 
-                        if task_status == "FINISHED":        
-                            continue
-                        
-                        for task in subtasks:
-                            solve(Accname, task_id)
-                            continue
+    not_finished_tasks = find_not_finished_tasks(res.json())
+    for task in not_finished_tasks:
+        if "invite" in task['title'].lower() or "farm" in task['title'].lower():
+            continue
 
-                        solve(Accname, task_id)
-                        continue
+        if task['status'] == "READY_FOR_CLAIM":
+            print(f"task {task} need code to verify skipping , {task['id']}")
+            continue
+        print(f"Task ID: {task['id']}, Title: {task['title']}, Status: {task['status']}")
+        solve(Accname, task)
 
-                for task in t.get("tasks"):
-
-                    task_id = task.get("id")
-                    task_title = task.get("title")
-                    task_status = task.get("status") 
-                    if task_status == "FINISHED":  
-                        continue
-                    solve(Accname, task_id)
+    # for tasks in res.json():
+    #     if isinstance(tasks, str):
+    #         print(f"{Accname}failed get task list !")
+    #         return
+    #     for k in list(tasks.keys()):
+    #         if k != "tasks" and k != "subSections":
+    #             continue
+    #         for t in tasks.get(k):
+    #             if isinstance(t, dict):
+    #                 subtasks = t.get("subTasks")
+    #                 if subtasks is not None:
+    #                     for task in subtasks:
+    #                         # self.solve(task, access_token)
+    #                         solve(Accname, task)
+    #                     # self.solve(t, access_token)
+    #                     solve(Accname, t)
+    #                     continue
+    #             for task in t.get("tasks"):
+    #                 solve(Accname, task)
 
 
 
@@ -260,6 +308,7 @@ def main(acc_name):
                     token = Login(acc_name)
 
                 user_d = user_balance(acc_name)
+                solve_task(acc_name)
 
                 if user_d.get("message") == "Invalid jwt token":
                     print("Invalid Token refresh token")
@@ -366,4 +415,4 @@ if __name__ == "__main__":
     }
 
 
-    start_threads()
+        main(name)
