@@ -172,11 +172,11 @@ def solve_task(Accname):
 
     not_finished_tasks = find_not_finished_tasks(res.json())
     for task in not_finished_tasks:
-        if "invite" in task['title'].lower() or "farm" in task['title'].lower():
+        if "invite" in task['title'].lower() or "farm" in task['title'].lower() or "connect" in task['title'].lower() or "subTasks" in task:
             continue
 
-        if task['status'] == "READY_FOR_CLAIM":
-            print(f"task {task} need code to verify skipping , {task['id']}")
+        if task['status'] == "READY_FOR_VERIFY":
+            print(f"task <{task['title']}> need code to verify skipping , <{task['id']}>")
             continue
         print(f"Task ID: {task['id']}, Title: {task['title']}, Status: {task['status']}")
         solve(Accname, task)
