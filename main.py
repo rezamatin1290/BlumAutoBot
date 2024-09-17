@@ -178,7 +178,7 @@ def solve_task(Accname):
         if task['status'] == "READY_FOR_VERIFY":
             print(f"task <{task['title']}> need code to verify skipping , <{task['id']}>")
             continue
-        print(f"Task ID: {task['id']}, Title: {task['title']}, Status: {task['status']}")
+        print(f"start Task ID: {task['id']}, Title: {task['title']}, Status: {task['status']}")
         solve(Accname, task)
 
     # for tasks in res.json():
