@@ -78,6 +78,82 @@ def Claim_Farm(Accname):
     return response.json()
 
 
+def solve(Accname, task_id):
+    url = f'https://earn-domain.blum.codes/api/v1/tasks/{task_id}/start'
+    access_token = accounts[Accname]["access_token"]
+
+    access_token = accounts[Accname]["access_token"] 
+    print (f"[{Accname}]=>claim farming=>", end="")
+
+    headers = defheader
+    headers["authorization"] = access_token
+    response = requests.post(url, headers=headers)
+    if response.ok:
+        print(f"[{Accname}] => task started: ", response)
+
+    else:
+        print("error in task start ", response)
+
+    time.sleep(random.randint(10, 15))
+    print(f"[{Accname}] => claiming task")
+    url = f"https://earn-domain.blum.codes/api/v1/tasks/{task_id}/claim"
+    response = requests.post(url, headers=headers)
+    if response.ok:
+        print(f"[{Accname}] => task claimed: ", response)
+
+    else:
+        print(f"[{Accname}] =>error in task claiming  ", response)
+
+
+def solve_task(Accname):
+    url_task = "https://earn-domain.blum.codes/api/v1/tasks"
+    access_token = accounts[Accname]["access_token"]
+    access_token = accounts[Accname]["access_token"] 
+
+    print (f"[{Accname}]=>getting task =>", end="")
+
+    headers = defheader
+    headers["authorization"] = access_token
+    res = requests.get(url_task, headers=headers)
+    # if not res.ok:
+    #     print("failed in get task list !")
+ 
+    
+    for tasks in res.json():
+        if isinstance(tasks, str):
+            print("failed in get task list !")
+            return
+        for k in list(tasks.keys()):
+            if k != "tasks" and k != "subSections":
+                continue
+            for t in tasks.get(k):
+                if isinstance(t, dict):
+                    subtasks = t.get("subTasks")
+                    if subtasks is not None:
+
+                        task_id = task.get("id")
+                        task_title = task.get("title")
+                        task_status = task.get("status") 
+                        if task_status == "FINISHED":        
+                            continue
+                        
+                        for task in subtasks:
+                            solve(Accname, task_id)
+                            continue
+
+                        solve(Accname, task_id)
+                        continue
+
+                for task in t.get("tasks"):
+
+                    task_id = task.get("id")
+                    task_title = task.get("title")
+                    task_status = task.get("status") 
+                    if task_status == "FINISHED":  
+                        continue
+                    solve(Accname, task_id)
+
+
 
 def getdailyreward(Accname):
     print(f"[{Accname}] getting Daily reward=> ",end="")
