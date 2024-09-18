@@ -16,14 +16,14 @@ from tkinter import *
 window = Tk()
 
 l1 = Label(window, text="Account Link: ")
-l1.grid(row=0, column=0, padx=10, pady=10, sticky="w")
+l1.grid(row=0, column=0, padx=10, pady=2, sticky="w")
 
 l2 = Label(window, text="number cards:")
 l2.grid(row=0, column=2 ,padx=10, pady=10, sticky="w")
 
 account_link = StringVar()
 e1 = Entry(window, textvariable=account_link)
-e1.grid(row=0, column=1, padx=10, pady=10)
+e1.grid(row=0, column=1, padx=3, pady=10)
 
 number_card = StringVar()
 e2 = Entry(window, textvariable=number_card)
