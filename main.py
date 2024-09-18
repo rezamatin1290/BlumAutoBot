@@ -302,6 +302,12 @@ def read_from_file():
 
 def main(acc_name):
         while True:
+            
+            try:
+                with open("config.json", 'r') as file:
+                    config = json.load(file)
+            except Exception as e:
+                print("Failed to read config.json or file does not exist.")
 
             try:
                 if not accounts.get(acc_name).get("Login"):
@@ -420,7 +426,6 @@ if __name__ == "__main__":
         "Login" : False,                             
     }
 
-    with open("config.json", 'r') as file:
-        config = json.load(file)
+
 
     start_threads()
