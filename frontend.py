@@ -10,7 +10,7 @@ show:
 
 
 """
-
+import threading
 from tkinter import *
 import requests
 import time
@@ -101,6 +101,10 @@ def make_requests_async(authorization_token, points, iteration):
             data = response.json()
             game_id = data.get("gameId")
             print(f"Iteration {iteration}: Wait for 32 seconds...")
+            show_msg.insert(END, f"Iteration {iteration}: Wait for 32 seconds...")
+            show_msg.see(END)
+            show_msg.update()
+
             time.sleep(32)
 
             claim_payload = {
@@ -111,15 +115,23 @@ def make_requests_async(authorization_token, points, iteration):
             response = requests.post('https://game-domain.blum.codes/api/v1/game/claim', headers=headers, json=claim_payload, proxies=proxy, verify=False)
             if response.status_code != 200:
                 print(f"Error from /game/claim (Iteration {iteration}): {response.text}")
+                show_msg.insert(END,f"Error from /game/claim (Iteration {iteration}): {response.text}")
+                show_msg.see(END)
+                show_msg.update()
                 return f"Iteration {iteration} failed."
             return f"Response==> {response.text}"
 
         except requests.RequestException as ex:
             attempt += 1
             print(f"Attempt {attempt} failed: {ex}")
+            show_msg.insert(END,f"Attempt {attempt} failed: {ex}")
+            show_msg.see(END)
+            show_msg.update()
+
             if attempt < max_retries:
                 time.sleep(retry_delay)
             else:
+                show_msg.insert(END,f"Iteration {iteration} failed after {attempt} attempts.")
                 return f"Iteration {iteration} failed after {attempt} attempts."
 
 
@@ -132,18 +144,32 @@ def autoplay(accounts, accname, iter, point_min, point_max):
 
     sum_points = 0
     print(f"[{accname}] => account started for get blum point")
+    show_msg.insert(END, f"[{accname}] => شروع و جمع اوری امتیاز ")
+    show_msg.update()
+
     
     while iter > 0:
         token = (accounts[accname]).get("access_token")
 
         point = random.randint(point_min, point_max)
         print(f"iter {iter} => point: {point}")
+        show_msg.insert(END, f"iter {iter} => point: {point}")
+        show_msg.see(END)
+        show_msg.update()
+
         sum_points = sum_points + point
 
         make_requests_async(token, point, iter)
         time.sleep(random.randint(4, 10))
         iter -= 1
     print(f"all points tap => {sum_points}")
+    show_msg.insert(END,f"[{accname}] => همه ی امتیاز های به دست امده{sum_points} ")
+    show_msg.insert(END,f"[{accname}] => برنامه به اتمام رسید )); یه بوس بده:) ")
+
+    show_msg.see(END)
+    show_msg.update()
+
+
 
 # if __name__ == "__main__":
 #         autoplay()
@@ -222,6 +248,11 @@ def show_number_card():
     if not (accounts[name]).get("Login"):
         Login(name)
 
+    user_status = user_balance(name)
+    if user_balance(name).get("message") == "Invalid jwt token":
+        show_msg.insert(END,f"[{name}] => توکن نامعتبر در حال تازه سازی")
+        Login(name)
+
     play_passes = (user_balance(name)).get("playPasses")
     print(f"[{name}] => تعداد کارت موجود: {play_passes}")
     show_msg.insert(END,f"[{name}] => تعداد کارت موجود: {play_passes}")
@@ -231,6 +262,8 @@ def show_number_card():
 
 def start_play():
     show_msg.delete(0, END)
+    show_msg.update()
+
 
     account_l = account_link.get()
     number_card1 = (number_card.get())
@@ -241,8 +274,13 @@ def start_play():
     except:
         if number_card1 == "" or not number_card1.isdigit():
             show_msg.insert(END,f"لطفا تعداد کارت را به صورت عدد وارد کنید")
+            show_msg.see(END)
+            show_msg.update()
+
         else:
             show_msg.insert(END,f"tel : @spy_1290 :  لطفا لینک درست وارد کنید برای راهنمایی بیشتر به ایدی ")
+            show_msg.update()
+
         return 
     
     accounts = read_accounts()
@@ -256,15 +294,34 @@ def start_play():
     if not (accounts[name]).get("Login"):
         Login(name)
     
+    if user_balance(name).get("message") == "Invalid jwt token":
+        show_msg.insert(END,f"[{name}] => توکن نامعتبر در حال تازه سازی")
+        show_msg.update()
+        show_msg.see(END)  # انتقال اسکرول بار به پایین
+        show_msg.update()  # به‌روزرسانی رابط کاربری
+        Login(name)
+    play_passes = (user_balance(name)).get("playPasses")
+    if  number_card1 > play_passes:
+        show_msg.insert(END, "تعداد کارت وارد شده از تعداد کارت موجود بیشتر است")
+        show_msg.update()
+        number_card1 = play_passes
     show_msg.insert(END,f"started to play")
 
-    autoplay(accounts, name, number_card1, 220, 240)
+
+    show_msg.insert(END,f"در حال بازی با تعداد کارت {number_card1}")
+    show_msg.update()
+    show_msg.insert(END,"منتظر بمانید...")
+    show_msg.see(END)  # انتقال اسکرول بار به پایین
+    show_msg.update()  # به‌روزرسانی رابط کاربری
+
+    threading.Thread(target=autoplay, args=(accounts, name, number_card1, 220, 240)).start()
+
 
 
 
 
 window = Tk()
-
+window.title("Blum Auto Clicker : Development by Reza")
 l1 = Label(window, text="Account Link: ")
 l1.grid(row=0, column=0, padx=10, pady=2, sticky="w")
 
