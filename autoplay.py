@@ -114,5 +114,5 @@ def autoplay(accounts, accname, iter, point_min, point_max):
         iter -= 1
     print(f"all points tap => {sum_points}")
 
-if __name__ == "__main__":
-        autoplay()
+# if __name__ == "__main__":
+#         autoplay()
