@@ -374,7 +374,7 @@ def main(acc_name):
                             iter = random.randint(card_number - 3, card_number)
 
                             if iter > 10:
-                                iter = 10
+                                iter = random.rand(7, 10)
                         autoplay(accounts, acc_name, iter, (config.get("game_point")).get("low"), (config.get("game_point")).get("high"))
 
 
