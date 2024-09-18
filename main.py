@@ -8,7 +8,7 @@ import logging
 import threading
 import json
 import re
-
+from autoplay import autoplay
 
 
 
@@ -302,12 +302,13 @@ def read_from_file():
 
 def main(acc_name):
         while True:
-            
+
             try:
                 with open("config.json", 'r') as file:
                     config = json.load(file)
             except Exception as e:
                 print("Failed to read config.json or file does not exist.")
+                exit(1)
 
             try:
                 if not accounts.get(acc_name).get("Login"):
@@ -364,6 +365,19 @@ def main(acc_name):
                     hour = time_to_farm // 3600
                     minute = (time_to_farm - (hour * 3600)) // 60
                     second = (time_to_farm) - (hour * 3600) - (minute * 60)
+
+                    card_number = user_d.get("playPasses")
+                    if card_number > 0 and config.get("auto_play_game"):
+                        if card_number <= 3:
+                            iter = card_number
+                        elif card_number > 3:
+                            iter = random.randint(card_number - 3, card_number)
+
+                            if iter > 10:
+                                iter = 10
+                        autoplay(accounts, acc_name, iter, (config.get("game_point")).get("low"), (config.get("game_point")).get("high"))
+
+
                     print(f"account :{acc_name} , Balance : {user_d.get('availableBalance')}, Card Number : {user_d.get('playPasses')}, End time of farming in {hour} hour, {minute} minute, {second} seconds")
                     time_to_farm = ((end_time//1000) - (timestamp//1000))
                     Delay = random.randint(time_to_farm + 1, time_to_farm + (6 * 60))
@@ -425,7 +439,7 @@ if __name__ == "__main__":
         "refresh_token" : "refresh_token",          
         "Login" : False,                             
     }
+        main(name)
 
 
-
-    start_threads()
+    # start_threads()
