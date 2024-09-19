@@ -113,28 +113,10 @@ def solve(Accname, task: dict):
     start_task_url = f"https://earn-domain.blum.codes/api/v1/tasks/{task_id}/start"
     claim_task_url = f"https://earn-domain.blum.codes/api/v1/tasks/{task_id}/claim"
     _start = requests.post(start_task_url, headers=headers)
-    # if task_id in ignore_tasks:
-    #     return
-    # if task_status == "FINISHED":
-    #     print(f"{Accname}already complete task id {task_id} !")
-    #     return
-    # if task_status == "READY_FOR_CLAIM":
-    #     _res = requests.post(claim_task_url, headers)
-    #     _status = _res.json().get("status")
-    #     if _status == "FINISHED":
-    #         print(f"{Accname}success complete task id {task_id} !")
-    #         return
-    # _res = requests.post(start_task_url, headers)
+
     time.sleep(5)
     _res = requests.post(claim_task_url, headers = headers)
     print(_res)
-    # _status = _res.json().get("status")
-    # if _status == "STARTED":
-    #     _res =requests.post(claim_task_url, headers)
-    #     _status = _res.json().get("status")
-    #     if _status == "FINISHED":
-    #         print(f"{Accname}success complete task id {task_id} !")
-    #         return
 
 def find_not_finished_tasks(data):
     not_finished_tasks = []
@@ -180,26 +162,6 @@ def solve_task(Accname):
             continue
         print(f"start Task ID: {task['id']}, Title: {task['title']}, Status: {task['status']}")
         solve(Accname, task)
-
-    # for tasks in res.json():
-    #     if isinstance(tasks, str):
-    #         print(f"{Accname}failed get task list !")
-    #         return
-    #     for k in list(tasks.keys()):
-    #         if k != "tasks" and k != "subSections":
-    #             continue
-    #         for t in tasks.get(k):
-    #             if isinstance(t, dict):
-    #                 subtasks = t.get("subTasks")
-    #                 if subtasks is not None:
-    #                     for task in subtasks:
-    #                         # self.solve(task, access_token)
-    #                         solve(Accname, task)
-    #                     # self.solve(t, access_token)
-    #                     solve(Accname, t)
-    #                     continue
-    #             for task in t.get("tasks"):
-    #                 solve(Accname, task)
 
 
 

@@ -40,11 +40,11 @@ def Login(Accname):
 def make_requests_async(authorization_token, points, iteration):
     proxy = None
     max_retries = 4
-    retry_delay = 2  # seconds
+
     attempt = 0
     while attempt < max_retries:
         try:
-            time.sleep(0.5)
+            time.sleep(random.randint(1))
             headers = {
                 "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36 Edg/125.0.0.0",
                 "Accept": "application/json, text/plain, */*",
@@ -87,7 +87,7 @@ def make_requests_async(authorization_token, points, iteration):
             attempt += 1
             print(f"Attempt {attempt} failed: {ex}")
             if attempt < max_retries:
-                time.sleep(retry_delay)
+                time.sleep(random.randint(6,10))
             else:
                 return f"Iteration {iteration} failed after {attempt} attempts."
 
