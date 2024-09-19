@@ -328,7 +328,7 @@ def main(acc_name):
 
                 
                     
-                time.sleep(23)
+                time.sleep(random.randint(6,10))
                 getdailyreward(acc_name)
                 
                 timestamp = user_d.get("timestamp", None)
