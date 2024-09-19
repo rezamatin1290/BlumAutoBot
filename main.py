@@ -408,7 +408,7 @@ def start_threads():
         process = threading.Thread(target=main, args=(acc,))
         threads.append(process)
         process.start()
-        time.sleep(random.randint(60, 2*60))
+        time.sleep(10)
 
     for p in threads:
         p.join()
