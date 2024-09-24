@@ -44,7 +44,7 @@ def make_requests_async(authorization_token, points, iteration):
     attempt = 0
     while attempt < max_retries:
         try:
-            time.sleep(random.randint(1))
+            time.sleep(random.randint(1,3))
             headers = {
                 "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36 Edg/125.0.0.0",
                 "Accept": "application/json, text/plain, */*",
