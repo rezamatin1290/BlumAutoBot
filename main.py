@@ -210,9 +210,12 @@ def wr_js_file(file, mode , data = None):
         return
     with open(file, mode) as f:
         if mode == "r":
-            return json.load(f)
+            try :
+                return json.load(f)
+            except:
+                return False
         elif mode == "w" and data != None:
-            json.dump(f, data)
+            json.dump(data, f)
 
 
     
@@ -425,9 +428,13 @@ if __name__ == "__main__":
         with open(".tokenstxt", "w") as f:
             pass
     accs_in_file = wr_js_file(".tokenstxt", "r")
-    for x in accounts.keys():
-        if not x in accs_in_file.keys():
-            accs_in_file[x] = accounts[x]
+    if accs_in_file == False:
+        wr_js_file(".tokenstxt", "w", accounts)
+        
+    else:
+        for x in accounts.keys():
+            if x not in accs_in_file.keys():
+                accs_in_file[x] = accounts[x]
     wr_js_file(".tokenstxt", "w", accs_in_file)
     
     start_threads()
