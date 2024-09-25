@@ -8,9 +8,10 @@ import logging
 import threading
 import json
 import re
+from os.path import exists as dir_exist
 from autoplay import autoplay
 
-
+lock = threading.Lock()
 
 
 
@@ -204,6 +205,17 @@ def user_balance(Accname):
 
 
 
+def wr_js_file(file, mode , data = None):
+    if not mode in ["r", "w"]:
+        return
+    with open(file, mode) as f:
+        if mode == "r":
+            return json.load(f)
+        elif mode == "w" and data != None:
+            json.dump(f, data)
+
+
+    
 
 def Login(Accname):
     #tg_web_data
@@ -225,6 +237,12 @@ def Login(Accname):
     accounts[Accname]["refresh_token"] = ref_token
     accounts[Accname]["Login"] = True
 
+    with lock:
+        acc = wr_js_file(".tokenstxt", "r")
+        acc[Accname]["access_token"] = access_token
+        acc[Accname]["refresh_token"] = ref_token
+        acc[Accname]["Login"] = True
+        wr_js_file(".tokenstxt", "w", acc)
     return ref_token, access_token
 
 
@@ -256,9 +274,9 @@ def refreshToken(Accname):
     else:
         print("Failed to refresh the token")
 
-def read_from_file():
+def read_from_file(file_name):
     
-    with open("url.txt", "r") as f:
+    with open(file_name, "r") as f:
         return f.readlines()
 
 
@@ -271,6 +289,7 @@ def main(acc_name):
             except Exception as e:
                 print("Failed to read config.json or file does not exist.")
                 exit(1)
+
 
             try:
                 if not accounts.get(acc_name).get("Login"):
@@ -378,7 +397,7 @@ def start_threads():
 if __name__ == "__main__":
     print("Development By Reza")
     accounts ={}
-    links =  (read_from_file())
+    links =  (read_from_file("url.txt"))
     keys = []
     if len(links) == 0 or links[0] == " " or links[0] == "\n":
         print("please insert your link in url.txt")
@@ -402,6 +421,13 @@ if __name__ == "__main__":
         "Login" : False,                             
     }
         # main(name)
-
-
+    if not dir_exist(".tokenstxt"):
+        with open(".tokenstxt", "w") as f:
+            pass
+    accs_in_file = wr_js_file(".tokenstxt", "r")
+    for x in accounts.keys():
+        if not x in accs_in_file.keys():
+            accs_in_file[x] = accounts[x]
+    wr_js_file(".tokenstxt", "w", accs_in_file)
+    
     start_threads()
