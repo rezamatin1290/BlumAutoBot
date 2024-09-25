@@ -61,9 +61,11 @@ def make_requests_async(authorization_token, points, iteration):
             response = requests.post('https://game-domain.blum.codes/api/v1/game/play', headers=headers, proxies=proxy, verify=False)
             if response.status_code == 401:
                 print("Token expired. Please enter a valid authorization token.")
-                return f"Iteration {iteration} failed."
+                return 5 #close play card
+                # return f"Iteration {iteration} failed."
             elif response.status_code != 200:
                 print(f"Iteration {iteration} failed: {response.text}")
+                attempt += 1 
                 time.sleep(13)
                 continue
 
@@ -80,7 +82,9 @@ def make_requests_async(authorization_token, points, iteration):
             response = requests.post('https://game-domain.blum.codes/api/v1/game/claim', headers=headers, json=claim_payload, proxies=proxy, verify=False)
             if response.status_code != 200:
                 print(f"Error from /game/claim (Iteration {iteration}): {response.text}")
-                return f"Iteration {iteration} failed."
+                # return f"Iteration {iteration} failed."
+                attempt += 1 
+                continue
             return f"Response==> {response.text}"
 
         except requests.RequestException as ex:
@@ -90,8 +94,9 @@ def make_requests_async(authorization_token, points, iteration):
                 time.sleep(random.randint(6,10))
             else:
                 return f"Iteration {iteration} failed after {attempt} attempts."
-
-
+    
+    if attempt >= max_retries:
+        return 5
 
 
 def autoplay(accounts, accname, iter, point_min, point_max):
@@ -109,7 +114,9 @@ def autoplay(accounts, accname, iter, point_min, point_max):
         print(f"iter {iter} => point: {point}")
         sum_points = sum_points + point
 
-        make_requests_async(token, point, iter)
+        retry = make_requests_async(token, point, iter)
+        if retry == 5:
+            return 
         time.sleep(random.randint(4, 10))
         iter -= 1
     print(f"all points tap => {sum_points}")
