@@ -42,21 +42,23 @@ def make_requests_async(authorization_token, points, iteration):
     max_retries = 4
 
     attempt = 0
+
+    headers = {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36 Edg/125.0.0.0",
+        "Accept": "application/json, text/plain, */*",
+        "accept-language": "en-US,en;q=0.9",
+        "authorization": authorization_token,
+        "origin": "https://telegram.blum.codes",
+        "priority": "u=1, i",
+        "sec-ch-ua": "\"Microsoft Edge\";v=\"125\", \"Chromium\";v=\"125\", \"Not.A/Brand\";v=\"24\", \"Microsoft Edge WebView2\";v=\"125\"",
+        "sec-fetch-dest": "empty",
+        "sec-fetch-mode": "cors",
+        "sec-fetch-site": "same-site"
+    }
+
     while attempt < max_retries:
         try:
-            time.sleep(random.randint(1))
-            headers = {
-                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36 Edg/125.0.0.0",
-                "Accept": "application/json, text/plain, */*",
-                "accept-language": "en-US,en;q=0.9",
-                "authorization": authorization_token,
-                "origin": "https://telegram.blum.codes",
-                "priority": "u=1, i",
-                "sec-ch-ua": "\"Microsoft Edge\";v=\"125\", \"Chromium\";v=\"125\", \"Not.A/Brand\";v=\"24\", \"Microsoft Edge WebView2\";v=\"125\"",
-                "sec-fetch-dest": "empty",
-                "sec-fetch-mode": "cors",
-                "sec-fetch-site": "same-site"
-            }
+            time.sleep(random.randint(1,3))
 
             response = requests.post('https://game-domain.blum.codes/api/v1/game/play', headers=headers, proxies=proxy, verify=False)
             if response.status_code == 401:
@@ -93,7 +95,8 @@ def make_requests_async(authorization_token, points, iteration):
             if attempt < max_retries:
                 time.sleep(random.randint(6,10))
             else:
-                return f"Iteration {iteration} failed after {attempt} attempts."
+                return 5
+                
     
     if attempt >= max_retries:
         return 5
