@@ -58,7 +58,7 @@ def make_requests_async(authorization_token, points, iteration):
 
     while attempt < max_retries:
         try:
-            time.sleep(random.randint(1,3))
+            time.sleep(random.uniform(1,3))
 
             response = requests.post('https://game-domain.blum.codes/api/v1/game/play', headers=headers, proxies=proxy, verify=False)
             if response.status_code == 401:
@@ -93,7 +93,7 @@ def make_requests_async(authorization_token, points, iteration):
             attempt += 1
             print(f"Attempt {attempt} failed: {ex}")
             if attempt < max_retries:
-                time.sleep(random.randint(6,10))
+                time.sleep(random.uniform(6,10))
             else:
                 return 5
                 
@@ -113,14 +113,14 @@ def autoplay(accounts, accname, iter, point_min, point_max):
     while iter > 0:
         token = (accounts[accname]).get("access_token")
 
-        point = random.randint(point_min, point_max)
+        point = random.uniform(point_min, point_max)
         print(f"iter {iter} => point: {point}")
         sum_points = sum_points + point
 
         retry = make_requests_async(token, point, iter)
         if retry == 5:
             return 
-        time.sleep(random.randint(4, 10))
+        time.sleep(random.uniform(4, 10))
         iter -= 1
     print(f"all points tap => {sum_points}")
 
