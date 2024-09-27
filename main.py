@@ -220,8 +220,8 @@ def main(acc_name):
                 user_d = user_balance(acc_name)
 
             user_d = user_balance(acc_name)
-            if config.get("auto_complete_task"):
-                solve_task(acc_name)
+            # if config.get("auto_complete_task"):
+            #     solve_task(acc_name)
 
 
             time.sleep(random.uniform(6, 10))
@@ -297,4 +297,4 @@ if __name__ == "__main__":
             "refresh_token": "refresh_token",
             "Login": False,
         }
-    start_threads(name)
+    start_threads()
