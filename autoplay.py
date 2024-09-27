@@ -107,7 +107,7 @@ def autoplay(accounts, accname, iter, point_min, point_max):
     while iter > 0:
         token = accounts[accname].get("access_token")
 
-        point = random.uniform(point_min, point_max)
+        point = random.randint(point_min, point_max)
         print(f"iter {iter} => point: {point}")
         sum_points += point
 
