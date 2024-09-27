@@ -166,6 +166,8 @@ def Login(Accname):
     url = "https://user-domain.blum.codes/api/v1/auth/provider/PROVIDER_TELEGRAM_MINI_APP"
     global accounts
     auth_url = accounts[Accname]["auth_url"]
+    if "https://telegram.blum.codes" in auth_url:
+        auth_url = auth_url.replace("https://telegram.blum.codes/#tgWebAppData=", "")
     decode_data = unquote(string=unquote(string=auth_url.split('&tgWebAppVersion')[0]))
     json_data = {"query": decode_data}
     response = requests.post(url, json=json_data)
@@ -295,4 +297,4 @@ if __name__ == "__main__":
             "refresh_token": "refresh_token",
             "Login": False,
         }
-    start_threads()
+    main(name)
