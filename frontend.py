@@ -226,11 +226,8 @@ def ret_name(account_l):
 
 def show_number_card():
 
-    # show_msg.delete(0, END)
     account_l = account_link.get()
-    # number_card1 = number_card.get()
 
-    # account_l = "https://telegram.blum.codes/#tgWebAppData=query_id%3DAAFhVOIvAwAAAGFU4i8U1nvv%26user%3D%257B%2522id%2522%253A7245812833%252C%2522first_name%2522%253A%2522dogs%25204%2520tablet%2522%252C%2522last_name%2522%253A%2522%2522%252C%2522username%2522%253A%2522Matiuperry%2522%252C%2522language_code%2522%253A%2522en%2522%252C%2522allows_write_to_pm%2522%253Atrue%257D%26auth_date%3D1726201899%26hash%3De3d89048cea31c6fc2f70137c0256d51786e7e27008c21607ff89c24f98b0464&tgWebAppVersion=7.8&tgWebAppPlatform=android&tgWebAppThemeParams=%7B%22bg_color%22%3A%22%231e1e1e%22%2C%22section_bg_color%22%3A%22%23191819%22%2C%22secondary_bg_color%22%3A%22%23000000%22%2C%22text_color%22%3A%22%23ffffff%22%2C%22hint_color%22%3A%22%237d7d7d%22%2C%22link_color%22%3A%22%23bc84dd%22%2C%22button_color%22%3A%22%23c282e6%22%2C%22button_text_color%22%3A%22%23ffffff%22%2C%22header_bg_color%22%3A%22%23262425%22%2C%22accent_text_color%22%3A%22%23c992eb%22%2C%22section_header_text_color%22%3A%22%23d498f1%22%2C%22subtitle_text_color%22%3A%22%237f7e7f%22%2C%22destructive_text_color%22%3A%22%23ee686f%22%2C%22section_separator_color%22%3A%22%23000000%22%7D"
     try:
         name, decode_data = ret_name(account_l)
     except:
@@ -297,8 +294,8 @@ def start_play():
     if user_balance(name).get("message") == "Invalid jwt token":
         show_msg.insert(END,f"[{name}] => توکن نامعتبر در حال تازه سازی")
         show_msg.update()
-        show_msg.see(END)  # انتقال اسکرول بار به پایین
-        show_msg.update()  # به‌روزرسانی رابط کاربری
+        show_msg.see(END)       
+        show_msg.update() 
         Login(name)
     play_passes = (user_balance(name)).get("playPasses")
     if  number_card1 > play_passes:
@@ -311,9 +308,9 @@ def start_play():
     show_msg.insert(END,f"در حال بازی با تعداد کارت {number_card1}")
     show_msg.update()
     show_msg.insert(END,"منتظر بمانید...")
-    show_msg.see(END)  # انتقال اسکرول بار به پایین
-    show_msg.update()  # به‌روزرسانی رابط کاربری
-
+    show_msg.see(END)
+    show_msg.update() 
+    
     threading.Thread(target=autoplay, args=(accounts, name, number_card1, 220, 240)).start()
 
 
