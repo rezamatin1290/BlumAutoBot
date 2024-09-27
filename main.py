@@ -211,15 +211,16 @@ def main(acc_name):
         try:
             if not accounts.get(acc_name).get("Login"):
                 Login(acc_name)
+                
+            if user_d.get("message") == "Invalid jwt token":
+                print("Invalid Token, refreshing token")
+                Login(acc_name)
+                user_d = user_balance(acc_name)
 
             user_d = user_balance(acc_name)
             if config.get("auto_complete_task"):
                 solve_task(acc_name)
 
-            if user_d.get("message") == "Invalid jwt token":
-                print("Invalid Token, refreshing token")
-                Login(acc_name)
-                user_d = user_balance(acc_name)
 
             time.sleep(random.uniform(6, 10))
             getdailyreward(acc_name)
