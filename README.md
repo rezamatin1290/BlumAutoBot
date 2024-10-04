@@ -1,5 +1,3 @@
-
-
 ﻿# BlumAutoBot
 
 Blum Auto Bot is script that uses blum api to get points automatically without extra effort     
