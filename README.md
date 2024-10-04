@@ -14,6 +14,7 @@ copy your query link blum account in `url.txt` file which can support multi acco
   1. Need Enable webview inspecting option (in the `Telegram settings => Advanced => Experimental settings => Enable webview inspecting`)
   2. Press **F12** then in the console tab
   3. Copy **Authorization** and enter it in the program
+
 https://github.com/user-attachments/assets/69b25085-dfb7-49af-89de-c884717bcb0b
 
 # What is config.json?
