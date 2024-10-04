@@ -16,8 +16,8 @@ like Below
 ```python
 {
     "interval": 5, 
-    "auto_complete_task": false, 
-    "auto_play_game": true, 
+    "auto_complete_task": False, 
+    "auto_play_game": True, 
     "game_point": {
         "low": 240,
         "high": 250
@@ -25,8 +25,8 @@ like Below
 }
 ```
 
-set `auto_complete_task` to `true` if you want to complete task automatically in blum     
-set `auto_play_game` to `true` if you want to script to use cards automatically to get point in range low and high gamepoint            
+set `auto_complete_task` to `True` if you want to complete task automatically in blum     
+set `auto_play_game` to `True` if you want to script to use cards automatically to get point in range low and high gamepoint            
 
 #####  If you find this project useful, please consider giving it a star! 
 ﻿
