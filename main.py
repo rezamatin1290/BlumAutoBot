@@ -175,7 +175,7 @@ def main(acc_name):
                 second = time_to_farm - (hour * 3600) - (minute * 60)
 
                 card_number = user_data.get("playPasses")
-                if card_number > 0 and config.get("auto_play_game"):
+                if card_number > 0 and config.get("auto_play_game") and False: #temporary disabled auto play part
                     if card_number <= 3:
                         iter = card_number
                     elif card_number > 3:
