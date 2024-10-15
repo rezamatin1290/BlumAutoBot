@@ -16,8 +16,8 @@ like Below
 ```python
 {
     "interval": 5, 
-    "auto_complete_task": False, 
-    "auto_play_game": True, 
+    "auto_complete_task": false, 
+    "auto_play_game": true, 
     "game_point": {
         "low": 240,
         "high": 250
