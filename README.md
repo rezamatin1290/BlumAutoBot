@@ -37,6 +37,34 @@ set `auto_play_game` to `True` if you want to script to use cards automatically 
 - [x] Multi Account Support
 - [x] Auto Play Game
 
+## Linux
 
+1. Make sure you computer was installed python and git.
+   
+   python
+   ```shell
+   sudo apt install python3 python3-pip
+   ```
+   git
+   ```shell
+   sudo apt install git
+   ```
+
+2. Clone this repository
+   
+   ```shell
+   git clone https://github.com/rezamatin1290/BlumAutoBot.git
+   ```
+
+3. goto BlumAutoBot directory
+
+   ```shell
+   cd BlumAutoBot
+   ```
+4. Create and Edit `url.txt`, input your link account in `url.txt`. One line for one  account, if you want add your another account add in new line!
+5. execute the main program 
+   ```
+   python main.py
+   ```
 #####  If you find this project useful, please consider giving it a star! 
 ﻿
