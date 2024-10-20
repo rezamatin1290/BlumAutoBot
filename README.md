@@ -31,5 +31,12 @@ like Below
 set `auto_complete_task` to `True` if you want to complete task automatically in blum     
 set `auto_play_game` to `True` if you want to script to use cards automatically to get point in range low and high gamepoint            
 
+# Features
+
+- [x] Auto Claim
+- [x] Multi Account Support
+- [x] Auto Play Game
+
+
 #####  If you find this project useful, please consider giving it a star! 
 ﻿
