@@ -5,14 +5,14 @@ copy your query link blum account in `url.txt` file which can support multi acco
 
 
 
-# How i can get link of my blum account?  
+## How i can get link of my blum account?  
 
 [Click Here](https://github.com/rezamatin1290/BlumAutoBot/issues/2#issuecomment-2424082631)
 
 
 
 
-# What is config.json?
+## What is config.json?
 config that you can change in `config.json` file
 like Below
 
@@ -31,7 +31,7 @@ like Below
 set `auto_complete_task` to `True` if you want to complete task automatically in blum     
 set `auto_play_game` to `True` if you want to script to use cards automatically to get point in range low and high gamepoint            
 
-# Features
+## Features
 
 - [x] Auto Claim
 - [x] Multi Account Support
