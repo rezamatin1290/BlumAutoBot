@@ -3,12 +3,12 @@
 Blum Auto Bot is script that uses blum api to get points automatically without extra effort     
 copy your query link blum account in `url.txt` file which can support multi account(> every line one account)
 
-<hr>
+
 
 # How i can get link of my blum account?  
 
 [Click Here](https://github.com/rezamatin1290/BlumAutoBot/issues/2#issuecomment-2424082631)
-<hr>
+
 
 
 
