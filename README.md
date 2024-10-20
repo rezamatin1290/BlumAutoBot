@@ -66,5 +66,15 @@ set `auto_play_game` to `True` if you want to script to use cards automatically 
    ```
    python main.py
    ```
+## Windows 
+
+1. Make sure you computer was installed python.
+   
+   python site : [https://python.org](https://python.org)
+   
+
+2. [Download](https://github.com/rezamatin1290/BlumAutoBot/releases/download/v1.0.1/BlumBotWin.rar) and unzip
+3. open frontend.exe and put your link in link account field and number of card you want to use enter and click on start
+
 #####  If you find this project useful, please consider giving it a star! 
 ﻿
