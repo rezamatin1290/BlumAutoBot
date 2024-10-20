@@ -5,9 +5,12 @@ copy your query link blum account in `url.txt` file which can support multi acco
 
 <hr>
 
-# How To work
+# How i can get link of my blum account?  
 
-https://github.com/user-attachments/assets/69b25085-dfb7-49af-89de-c884717bcb0b
+[Click Here](https://github.com/rezamatin1290/BlumAutoBot/issues/2#issuecomment-2424082631)
+<hr>
+
+
 
 # What is config.json?
 config that you can change in `config.json` file
