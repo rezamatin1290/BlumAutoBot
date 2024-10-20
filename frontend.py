@@ -42,6 +42,21 @@ defheader = {
             "sec-fetch-dest": "empty"
             }
 
+def create_payload(game_id, points, dogs, headers):
+    url = 'https://raw.githubusercontent.com/zuydd/database/main/blum.json'
+    data = requests.get(url=url)
+    payload_server = data.json().get('payloadServer', [])
+    filtered_data = [item for item in payload_server if item['status'] == 1]
+    random_id = random.choice([item['id'] for item in filtered_data])
+    resp = requests.post(f'https://{random_id}.vercel.app/api/blum', json={'game_id': game_id,
+                                                                                    'points': points,
+                                                                                    'dogs': dogs
+                                                                                    })
+    if resp is not None:
+        data = resp.json()
+        if "payload" in data:
+            return data["payload"]
+        return None
 
 def Login(Accname):
     #tg_web_data
@@ -89,12 +104,13 @@ def make_requests_async(authorization_token, points, iteration):
                 "sec-fetch-site": "same-site"
             }
 
-            response = requests.post('https://game-domain.blum.codes/api/v1/game/play', headers=headers, proxies=proxy, verify=False)
+            response = requests.post('https://game-domain.blum.codes/api/v2/game/play', headers=headers)
             if response.status_code == 401:
                 print("Token expired. Please enter a valid authorization token.")
-                return f"Iteration {iteration} failed."
+                return 5  # Close play card
             elif response.status_code != 200:
                 print(f"Iteration {iteration} failed: {response.text}")
+                attempt += 1
                 time.sleep(13)
                 continue
 
@@ -105,14 +121,12 @@ def make_requests_async(authorization_token, points, iteration):
             show_msg.see(END)
             show_msg.update()
 
-            time.sleep(32)
+            time.sleep(random.uniform(32, 40))
 
-            claim_payload = {
-                "gameId": game_id,
-                "points": points
-            }
+            claim_payload = create_payload(game_id, points, 0, headers)
+            claim_payload = {"payload": claim_payload}
 
-            response = requests.post('https://game-domain.blum.codes/api/v1/game/claim', headers=headers, json=claim_payload, proxies=proxy, verify=False)
+            response = requests.post('https://game-domain.blum.codes/api/v2/game/claim', headers=headers, json=claim_payload)
             if response.status_code != 200:
                 print(f"Error from /game/claim (Iteration {iteration}): {response.text}")
                 show_msg.insert(END,f"Error from /game/claim (Iteration {iteration}): {response.text}")
