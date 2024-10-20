@@ -3,38 +3,27 @@ import time
 import random
 from urllib.parse import unquote
 import urllib3
+import json
 
-# Disable SSL warnings
 urllib3.disable_warnings()
 
-def login(accname):
-    """
-    Logs into the account using the provided account name.
-    """
-    print("Logging into Account", accname)
-
-    proxy = None
-    url = "https://user-domain.blum.codes/api/v1/auth/provider/PROVIDER_TELEGRAM_MINI_APP"
-    global accounts
-    auth_url = accounts[accname]["auth_url"]
-    decode_data = unquote(string=unquote(string=auth_url.split('tgWebAppData=')[1].split('&tgWebAppVersion')[0]))
-
-    json_data = {"query": decode_data}
-    response = requests.post(url, json=json_data, proxies=proxy, verify=False)
-    response_json = response.json()
-
-    ref_token = response_json.get("token").get("refresh")
-    access_token = "Bearer " + response_json.get("token").get("access")
-    accounts[accname]["access_token"] = access_token
-    accounts[accname]["refresh_token"] = ref_token
-    accounts[accname]["Login"] = True
-
-    return ref_token, access_token
+def create_payload(game_id, points, dogs, headers):
+    url = 'https://raw.githubusercontent.com/zuydd/database/main/blum.json'
+    data = requests.get(url=url)
+    payload_server = data.json().get('payloadServer', [])
+    filtered_data = [item for item in payload_server if item['status'] == 1]
+    random_id = random.choice([item['id'] for item in filtered_data])
+    resp = requests.post(f'https://{random_id}.vercel.app/api/blum', json={'game_id': game_id,
+                                                                                    'points': points,
+                                                                                    'dogs': dogs
+                                                                                    })
+    if resp is not None:
+        data = resp.json()
+        if "payload" in data:
+            return data["payload"]
+        return None
 
 def make_requests_async(authorization_token, points, iteration):
-    """
-    Makes asynchronous requests to play and claim points in the game.
-    """
     proxy = None
     max_retries = 4
     attempt = 0
@@ -56,7 +45,7 @@ def make_requests_async(authorization_token, points, iteration):
         try:
             time.sleep(random.uniform(1, 3))
 
-            response = requests.post('https://game-domain.blum.codes/api/v1/game/play', headers=headers, proxies=proxy, verify=False)
+            response = requests.post('https://game-domain.blum.codes/api/v2/game/play', headers=headers)
             if response.status_code == 401:
                 print("Token expired. Please enter a valid authorization token.")
                 return 5  # Close play card
@@ -69,14 +58,24 @@ def make_requests_async(authorization_token, points, iteration):
             data = response.json()
             game_id = data.get("gameId")
             print(f"Iteration {iteration}: Wait for 32 seconds...")
-            time.sleep(32)
 
-            claim_payload = {
-                "gameId": game_id,
-                "points": points
-            }
+            # dogs_eligible = requests.post('https://game-domain.blum.codes/api/v2/game/eligibility/dogs_drop', headers=headers, proxies=proxy, verify=False) 
+            
+            # if dogs_eligible is not None:
+            #     eligible = dogs_eligible.json().get('eligible', False)
+            # else:
+            #     eligible = None
 
-            response = requests.post('https://game-domain.blum.codes/api/v1/game/claim', headers=headers, json=claim_payload, proxies=proxy, verify=False)
+            time.sleep(random.uniform(32, 40))
+            
+            claim_payload = create_payload(game_id, points, 0, headers)
+            claim_payload = {"payload": claim_payload}
+            # if eligible:
+            #     dogs = random.randint(50, 80) 
+            # else:
+            #     claim_payload = create_payload(game_id, points, 0, headers)
+    
+            response = requests.post('https://game-domain.blum.codes/api/v2/game/claim', headers=headers, json=claim_payload)
             if response.status_code != 200:
                 print(f"Error from /game/claim (Iteration {iteration}): {response.text}")
                 attempt += 1
@@ -96,9 +95,6 @@ def make_requests_async(authorization_token, points, iteration):
         return 5
 
 def autoplay(accounts, accname, iter, point_min, point_max):
-    """
-    Automates the process of playing the game and claiming points.
-    """
     print("Development By Reza")
 
     sum_points = 0
@@ -121,4 +117,6 @@ def autoplay(accounts, accname, iter, point_min, point_max):
 
 # Uncomment the following lines to run the autoplay function directly
 # if __name__ == "__main__":
-#     autoplay()
+#     bearer_token = "your Bearer token"
+#     p = random.randint(minpoint, maxpoint)
+#     make_requests_async(bearer_token, p, 1)
