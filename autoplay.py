@@ -57,7 +57,7 @@ def make_requests_async(authorization_token, points, iteration):
 
             data = response.json()
             game_id = data.get("gameId")
-            print(f"Iteration {iteration}: Wait for 32 seconds...")
+            print(f"Iteration {iteration}: Waiting...")
 
             # dogs_eligible = requests.post('https://game-domain.blum.codes/api/v2/game/eligibility/dogs_drop', headers=headers, proxies=proxy, verify=False) 
             

@@ -65,13 +65,13 @@ def get_daily_reward(acc_name):
         print(f"[{acc_name}] => daily reward: {response_js}")
         response =send_request(acc_name, url, "GET", default_header)
     else:
-        print(f"[{acc_name}] => daily reward not found: {response_js}")
+        print(f"[{acc_name}] => daily reward not found")
 
 def user_balance(acc_name):
     url = "https://game-domain.blum.codes/api/v1/user/balance"
     response = send_request(acc_name, url, "GET", default_header)
 
-    print(f"[{acc_name}] => user balance: {response.json()}")
+    print(f"[{acc_name}] => user balance: {response.json().get('availableBalance')}")
     return response.json()
 
 def login(acc_name):
@@ -175,13 +175,16 @@ def main(acc_name):
                 second = time_to_farm - (hour * 3600) - (minute * 60)
 
                 card_number = user_data.get("playPasses")
+
                 if card_number > 0 and config.get("auto_play_game"): 
+                    max_tiket = config.get("max_ticket_use")
                     if card_number <= 3:
                         iter = card_number
                     elif card_number > 3:
-                        iter = random.randint(card_number - 3, card_number)
-                        if iter > 10:
-                            iter = random.randint(7, 10)
+                        if max_tiket <= card_number:
+                            iter = random.randint(max_tiket - 3, max_tiket)
+                        else:
+                            iter = random.randint(card_number - 3, card_number)
 
                     autoplay(
                         accounts, acc_name, iter,
@@ -195,7 +198,7 @@ def main(acc_name):
                       f"End time of farming in {hour} hour, {minute} minute, {second} seconds"
                 )
                 delay = random.uniform(time_to_farm + 1, time_to_farm + (6 * 60))
-                print(f"adding random time to sleep {delay} seconds")
+                print(f"add random time to sleep {delay} seconds")
                 time.sleep(delay)
                 login(acc_name)
             else:
