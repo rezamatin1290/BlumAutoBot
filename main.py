@@ -177,15 +177,20 @@ def main(acc_name):
                 card_number = user_data.get("playPasses")
 
                 if card_number > 0 and config.get("auto_play_game"): 
+                    print("available tickets count => ", card_number)
                     max_tiket = config.get("max_ticket_use")
                     if card_number <= 3:
                         iter = card_number
                     elif card_number > 3:
-                        if max_tiket <= card_number:
+                        if max_tiket <= 3:
+                            iter = max_tiket
+                        elif max_tiket <= card_number:
                             iter = random.randint(max_tiket - 3, max_tiket)
                         else:
                             iter = random.randint(card_number - 3, card_number)
 
+                    print(f"count for iter is {iter}")
+                    
                     autoplay(
                         accounts, acc_name, iter,
                         config.get("game_point").get("low"),

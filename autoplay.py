@@ -23,7 +23,7 @@ def create_payload(game_id, points, dogs, headers):
             return data["payload"]
         return None
 
-def make_requests_async(authorization_token, points, iteration):
+def make_requests_async(authorization_token, points, iteration, accname):
     proxy = None
     max_retries = 4
     attempt = 0
@@ -47,17 +47,17 @@ def make_requests_async(authorization_token, points, iteration):
 
             response = requests.post('https://game-domain.blum.codes/api/v2/game/play', headers=headers)
             if response.status_code == 401:
-                print("Token expired. Please enter a valid authorization token.")
+                print("[{accname}] => Token expired. Please enter a valid authorization token.")
                 return 5  # Close play card
             elif response.status_code != 200:
-                print(f"Iteration {iteration} failed: {response.text}")
+                print(f"[{accname}] => Iteration {iteration} failed: {response.text}")
                 attempt += 1
                 time.sleep(13)
                 continue
 
             data = response.json()
             game_id = data.get("gameId")
-            print(f"Iteration {iteration}: Waiting...")
+            print(f"[{accname}] => Iteration {iteration}: Waiting...")
 
             # dogs_eligible = requests.post('https://game-domain.blum.codes/api/v2/game/eligibility/dogs_drop', headers=headers, proxies=proxy, verify=False) 
             
@@ -77,7 +77,7 @@ def make_requests_async(authorization_token, points, iteration):
     
             response = requests.post('https://game-domain.blum.codes/api/v2/game/claim', headers=headers, json=claim_payload)
             if response.status_code != 200:
-                print(f"Error from /game/claim (Iteration {iteration}): {response.text}")
+                print(f"[{accname}] => Error from /game/claim (Iteration {iteration}): {response.text}")
                 attempt += 1
                 continue
 
@@ -85,7 +85,7 @@ def make_requests_async(authorization_token, points, iteration):
 
         except requests.RequestException as ex:
             attempt += 1
-            print(f"Attempt {attempt} failed: {ex}")
+            print(f"[{accname}] => Attempt {attempt} failed: {ex}")
             if attempt < max_retries:
                 time.sleep(random.uniform(6, 10))
             else:
@@ -107,7 +107,7 @@ def autoplay(accounts, accname, iter, point_min, point_max):
         print(f"iter {iter} => point: {point}")
         sum_points += point
 
-        retry = make_requests_async(token, point, iter)
+        retry = make_requests_async(token, point, iter, accname)
         if retry == 5:
             return
         time.sleep(random.uniform(4, 10))
