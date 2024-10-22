@@ -21,6 +21,7 @@ like Below
     "interval": 5, 
     "auto_complete_task": false, 
     "auto_play_game": true, 
+    "max_ticket_use": 10,
     "game_point": {
         "low": 240,
         "high": 250
