@@ -43,15 +43,28 @@ def startFarm(acc_name):
     print(f"[{acc_name}] starting farm =>", end="")
 
     url = "https://game-domain.blum.codes/api/v1/farming/start"
-    response = send_request(acc_name, url, "POST", default_header.copy) 
+    access_token = (accounts.get(acc_name)).get("access_token")
+
+    headers = default_header.copy()
+    headers.update({
+        'authorization': access_token
+    })
+    # response = send_request(acc_name, url, "POST", default_header.copy)
+    response = requests.post(url, headers=headers)
 
     print(" response: ", response)
 
 def claim_farm(acc_name):
     print(f"[{acc_name}] => Claim Farm =>", end="")
     url = 'https://game-domain.blum.codes/api/v1/farming/claim'
+    access_token = (accounts.get(acc_name)).get("access_token")
 
-    response = send_request(acc_name, url, "POST", default_header.copy)
+    headers = default_header.copy()
+    headers.update({
+        'authorization': access_token
+    })
+    # response = send_request(acc_name, url, "POST", default_header.copy)
+    response = requests.post(url, headers=headers)
     print("response: ", response)
     return response.json()
 
@@ -63,7 +76,7 @@ def get_daily_reward(acc_name):
     response_js = response_get.json()
     if response_js.get('days'):
         print(f"[{acc_name}] => daily reward: {response_js}")
-        response =send_request(acc_name, url, "GET", default_header)
+        response = send_request(acc_name, url, "POST", default_header)
     else:
         print(f"[{acc_name}] => daily reward not found")
 
@@ -159,11 +172,11 @@ def main(acc_name):
 
             if (user_data.get("farming", None) is None) or (timestamp and end_time and timestamp >= end_time):
                 claim_farm(acc_name)
-                time.sleep(random.uniform(60, 3 * 60))
+                time.sleep(random.uniform(2, 10))
                 startFarm(acc_name)
-                time.sleep(random.uniform(60, 2 * 60))
+                time.sleep(random.uniform(2, 10))
                 get_daily_reward(acc_name)
-                time.sleep(random.uniform(10 * 60, 15 * 60))
+                time.sleep(random.uniform(2, 10))
 
                 user_data = user_balance(acc_name)
                 timestamp = user_data.get("timestamp", None)
@@ -176,7 +189,7 @@ def main(acc_name):
 
                 card_number = user_data.get("playPasses")
 
-                if card_number > 0 and config.get("auto_play_game"): 
+                if card_number > 0 and config.get("auto_play_game") and False: 
                     print("available tickets count => ", card_number)
                     max_tiket = config.get("max_ticket_use")
                     if card_number <= 3:
@@ -250,4 +263,5 @@ if __name__ == "__main__":
                 "refresh_token": "refresh_token",
                 "login": False,
             }
+    # main(name)
     start_threads()
